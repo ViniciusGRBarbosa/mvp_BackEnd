@@ -16,11 +16,26 @@ public class UserController : ControllerBase
     {
         _context = context;
     }
-    [HttpGet]
-    public async Task<IActionResult> GetUserById()
+    [HttpGet("{userId:long}")]
+    public IActionResult GetUserById(long userId)
     {
+        var userName =  _context.Users.Where(x => x.Id == userId).Select(x => new {
+            x.FirstName,
+            x.LastName,
+            x.PhoneNumber,
+            x.Email,
+            Address = x.HasAddresses.Select(x => new {
+                x.Address.Street,
+                x.Address.Number,
+                x.Address.Complement,
+                x.Address.City,
+                x.Address.Uf,
+                x.Address.ZipCode,
+            }).ToList()
+        }).FirstOrDefault();
 
-        var userName = await _context.Users.Where(x => x.Id == 15).Select(x => x.FirstName).ToListAsync();
+        if (userName is null) return BadRequest("Usuário não encontrado");
+
         return Ok(userName);
     }
 

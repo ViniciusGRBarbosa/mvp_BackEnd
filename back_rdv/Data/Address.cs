@@ -1,9 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace back_rdv.Data;
 
 public class Address
 {
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long  Id { get; set; }
     public string Street { get; set; } = null!;
     public string Number { get; set; } = null!;
